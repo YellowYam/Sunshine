@@ -34,3 +34,6 @@ The following image shows the web application's appearance and functionality:
 Below is link for deployed Sunshine website.
 
 [Sunshine](https://yellowyam.github.io/Sunshine/)
+
+## License
+![MIT License](https://img.shields.io/badge/license-MIT-green)
