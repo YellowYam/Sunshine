@@ -199,7 +199,7 @@ function getActivities() {
     var cod = Number(String(cityWeatherData.weather[0].id).charAt(0));
 
     var outDoor = ["art_gallery", "tourist_attraction", "park"];
-    var indoor = ["Library", "art_gallery"];
+    var indoor = ["library", "art_gallery"];
     var evening = ["cafe", "night_club", "bar"];
 
     if (Number(time) > 18) {
@@ -211,7 +211,7 @@ function getActivities() {
             return outDoor[Math.floor(Math.random() * outDoor.length)];
 
         case 5:
-            return "Library";
+            return "library";
 
         case 6:
         case 3:
