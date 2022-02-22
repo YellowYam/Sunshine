@@ -35,5 +35,13 @@ Below is link for deployed Sunshine website.
 
 [Sunshine](https://yellowyam.github.io/Sunshine/)
 
+## Contacts
+
+| Name                     | GitHub Username |
+|--------------------------|-----------------|
+| Cody S.                  | YellowYam       |
+| Miles Colon              | BinaryBitBytes  |
+| Venkata Sameer Elamarthy | evs95           |
+
 ## License
 ![MIT License](https://img.shields.io/badge/license-MIT-green)
