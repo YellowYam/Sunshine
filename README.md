@@ -23,11 +23,17 @@ Features include
 
 [Foundation JS ](https://get.foundation/)- to style page elements
 
-## Mock-Up
+## Screenshots
 
-The following image shows the web application's appearance and functionality:
+### This demo shows the web application's appearance and functionality
 
 ![A user clicks through an interactive Acivity Suggester, then finds the acticities near the destination based on its weather conditions](assets/images/screenshot.gif.gif)
+
+### Foundation CSS makes this app mobile first
+![The app on mobile devices](assets/images/sunshine-mobile-screenshot.png)
+
+### It's also responsive on tablets
+![The app on tablets](assets/images/sunshine-tablet-screenshot.png)
 
 ## Application Url
 
