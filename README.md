@@ -1,6 +1,5 @@
 # Sunshine
-The Sunshine Application allows a social enthusiasts to pick a desired destination city in order to find appropriate activities based on ambient conditions at that destination and user intent.
-It also takes local coordinates in order to provide weather conditions of user current location.
+The Sunshine Application allows social enthusiasts to find places to go in any city no matter what the weather.
 
 Features include
 
