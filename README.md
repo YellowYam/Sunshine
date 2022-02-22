@@ -1,4 +1,4 @@
-# Sunshine - Acivity Suggestor
+# Sunshine
 The Sunshine Application allows a social enthusiasts to pick a desired destination city in order to find appropriate activities based on ambient conditions at that destination and user intent.
 It also takes local coordinates in order to provide weather conditions of user current location.
 
