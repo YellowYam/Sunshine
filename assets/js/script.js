@@ -206,6 +206,10 @@ function handleSearchRequest(city) {
 
                     //Trigger/Open the Modal
                     document.getElementById('id02').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('id02').style.display = 'none';
+                        
+                    }, 1000);
 
                     new Error('Response lacks information. Re-trying.');
                     setTimeout(() => {
