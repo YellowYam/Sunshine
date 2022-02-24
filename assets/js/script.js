@@ -178,15 +178,32 @@ function handleSearchRequest(city) {
     fetch(trueWayURL, trueWayOptions)
 
         .then(response => {
-            console.log(response);
             //Save the place results to a global variable
             response = response.json();
             return response;
         })
         .then(function (response) {
-            trueWayPlaces = response.results;
-            suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city}`);
-            renderResults();
+
+            //Look for addresses in the header
+            let containsAddresses = false;
+            for(let i = 0 ; i < response.results.length; i++){
+                if(response.results[i] != undefined){
+                    containsAddresses = true;
+                    trueWayPlaces = response.results;
+                    suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city.toUpperCase()}`);
+                    renderResults();
+                }
+            }
+
+            if(!containsAddresses){
+                new Error('Response lacks information. Re-trying.');
+                setTimeout(() => {
+                    handleSearchRequest(city);
+                }, 1000);
+            }
+
+
+          
         })
         .catch(err => {
             console.error(err);
@@ -224,7 +241,7 @@ function getActivities() {
 
 // TODO : Show section of activities
 function renderResults() {
-
+ setTimeout(() => {
     rulesInfo.hide();
     resultsSection.hide();
 
@@ -322,6 +339,8 @@ function renderResults() {
 
     resultsSection.fadeIn('slow', 'linear');
     searchInput.val('');
+ }, 200);
+    
 };
 
 function loadSavedCities() {
