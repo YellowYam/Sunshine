@@ -178,15 +178,36 @@ function handleSearchRequest(city) {
     fetch(trueWayURL, trueWayOptions)
 
         .then(response => {
-            console.log(response);
             //Save the place results to a global variable
             response = response.json();
             return response;
         })
         .then(function (response) {
-            trueWayPlaces = response.results;
-            suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city}`);
-            renderResults();
+
+            //Look for addresses in the header
+            let containsAddresses = false;
+            for(let i = 0 ; i < response.results.length; i++){
+                if(response.results[i].address != undefined){
+                    containsAddresses = true;
+                    trueWayPlaces = response.results;
+                    suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city.toUpperCase()}`);
+                    renderResults();
+                }
+            }
+
+            if(!containsAddresses){
+
+                //Trigger/Open the Modal
+                document.getElementById('id02').style.display='block';
+
+                new Error('Response lacks information. Re-trying.');
+                setTimeout(() => {
+                    handleSearchRequest(city);
+                }, 1000);
+            }
+
+
+          
         })
         .catch(err => {
             console.error(err);
@@ -225,8 +246,11 @@ function getActivities() {
 // TODO : Show section of activities
 function renderResults() {
 
-    rulesInfo.hide();
-    resultsSection.hide();
+    rulesInfo.fadeOut('fast', 'linear');
+    resultsSection.fadeOut('fast', 'linear');
+
+ setTimeout(() => {
+   
 
     //Assign jQuery references to results elements
     //var heroSection = $('.hero-section');
@@ -322,6 +346,8 @@ function renderResults() {
 
     resultsSection.fadeIn('slow', 'linear');
     searchInput.val('');
+ }, 200);
+    
 };
 
 function loadSavedCities() {
@@ -367,13 +393,18 @@ btnsearchEl.on('click', onSearchBtnClick);
 
 
 // Get the modal
-var modal = document.getElementById('id01');
+var validationModal = document.getElementById('id01');
+var badResponseModal = document.getElementById('id02');
+
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == validationModal) {
+    validationModal.style.display = "none";
     searchInput.val('');
+  }
+  if (event.target == badResponseModal) {
+    badResponseModal.style.display = "none";
   }
 }
 
