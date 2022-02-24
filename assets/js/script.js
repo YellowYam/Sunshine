@@ -187,7 +187,7 @@ function handleSearchRequest(city) {
             //Look for addresses in the header
             let containsAddresses = false;
             for(let i = 0 ; i < response.results.length; i++){
-                if(response.results[i] != undefined){
+                if(response.results[i].address != undefined){
                     containsAddresses = true;
                     trueWayPlaces = response.results;
                     suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city.toUpperCase()}`);
@@ -196,6 +196,10 @@ function handleSearchRequest(city) {
             }
 
             if(!containsAddresses){
+
+                //Trigger/Open the Modal
+                document.getElementById('id02').style.display='block';
+
                 new Error('Response lacks information. Re-trying.');
                 setTimeout(() => {
                     handleSearchRequest(city);
@@ -241,9 +245,12 @@ function getActivities() {
 
 // TODO : Show section of activities
 function renderResults() {
+
+    rulesInfo.fadeOut('fast', 'linear');
+    resultsSection.fadeOut('fast', 'linear');
+
  setTimeout(() => {
-    rulesInfo.hide();
-    resultsSection.hide();
+   
 
     //Assign jQuery references to results elements
     //var heroSection = $('.hero-section');
@@ -386,13 +393,18 @@ btnsearchEl.on('click', onSearchBtnClick);
 
 
 // Get the modal
-var modal = document.getElementById('id01');
+var validationModal = document.getElementById('id01');
+var badResponseModal = document.getElementById('id02');
+
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == validationModal) {
+    validationModal.style.display = "none";
     searchInput.val('');
+  }
+  if (event.target == badResponseModal) {
+    badResponseModal.style.display = "none";
   }
 }
 
