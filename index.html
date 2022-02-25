@@ -23,13 +23,24 @@
   <title>Sunshine</title>
 
 
-   <!-- The Modal -->
+   <!-- The Validation Modal -->
    <div id="id01" class="w3-modal">
     <div class="w3-modal-content w3-animate-bottom">
       <div class="w3-container">
         <span onclick="document.getElementById('id01').style.display='none'"
           class="w3-button w3-display-topright">&times;</span>
         <p>You must enter a valid city name.</p>
+      </div>
+    </div>
+  </div>
+
+   <!-- The Bad Response Modal -->
+   <div id="id02" class="w3-modal">
+    <div class="w3-modal-content w3-animate-bottom">
+      <div class="w3-container">
+        <span onclick="document.getElementById('id02').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+        <p>Bad Requst: Re-trying...</p>
       </div>
     </div>
   </div>

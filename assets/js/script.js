@@ -99,10 +99,11 @@ function getWeatherData(city) {
                         });
                 };
             }
-            else { console.log('error')
-                
-               //Trigger/Open the Modal
-                document.getElementById('id01').style.display='block';
+            else {
+                console.log('error')
+
+                //Trigger/Open the Modal
+                document.getElementById('id01').style.display = 'block';
                 searchInput.val('');
             };
 
@@ -148,7 +149,7 @@ function handleSearchRequest(city) {
     if (!cityExist) {
         previousSearches.unshift(searchValues);
         //Limit max saved searches to 10
-        if(previousSearches.length >= 10){
+        if (previousSearches.length >= 10) {
             previousSearches.pop();
         }
     }
@@ -178,15 +179,46 @@ function handleSearchRequest(city) {
     fetch(trueWayURL, trueWayOptions)
 
         .then(response => {
-            console.log(response);
+
+
+
             //Save the place results to a global variable
             response = response.json();
             return response;
+
         })
         .then(function (response) {
-            trueWayPlaces = response.results;
-            suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city}`);
-            renderResults();
+            //Give mobile devices time to load response
+            setTimeout(() => {
+
+                //Look for addresses in the header
+                let containsAddresses = false;
+                for (let i = 0; i < response.results.length; i++) {
+                    if (response.results[i].address != undefined) {
+                        containsAddresses = true;
+                        trueWayPlaces = response.results;
+                        suggestedActivitiesHeadingEl.text(`Suggested Activities in ${city.toUpperCase()}`);
+                        renderResults();
+                    }
+                }
+
+                if (!containsAddresses) {
+
+                    //Trigger/Open the Modal
+                    document.getElementById('id02').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('id02').style.display = 'none';
+                        
+                    }, 1000);
+
+                    new Error('Response lacks information. Re-trying.');
+                    setTimeout(() => {
+                        handleSearchRequest(city);
+                    }, 1000);
+                }
+
+
+            }, 100);
         })
         .catch(err => {
             console.error(err);
@@ -225,103 +257,108 @@ function getActivities() {
 // TODO : Show section of activities
 function renderResults() {
 
-    rulesInfo.hide();
-    resultsSection.hide();
+    rulesInfo.fadeOut('fast', 'linear');
+    resultsSection.fadeOut('fast', 'linear');
 
-    //Assign jQuery references to results elements
-    //var heroSection = $('.hero-section');
-
-    $('#city-weather').empty();
-
-    $('#city-weather').text(cityWeatherData.weather[0].main)
-                      .append($('<img>')
-                      .attr('alt', cityWeatherData.weather[0].description)
-                      .attr('src', "http://openweathermap.org/img/wn/"
-                                + cityWeatherData.weather[0].icon + "@2x.png"));
-
-    $('#city-time').empty();
-
-    $('#city-time').text(moment(new Date(cityWeatherData.dt * 1000)).format("hh:mm a"))
+    setTimeout(() => {
 
 
-    var cards = $('#card-section');
+        //Assign jQuery references to results elements
+        //var heroSection = $('.hero-section');
+
+        $('#city-weather').empty();
+
+        $('#city-weather').text(cityWeatherData.weather[0].main)
+            .append($('<img>')
+                .attr('alt', cityWeatherData.weather[0].description)
+                .attr('src', "http://openweathermap.org/img/wn/"
+                    + cityWeatherData.weather[0].icon + "@2x.png"));
+
+        $('#city-time').empty();
+
+        $('#city-time').text(moment(new Date(cityWeatherData.dt * 1000)).format("hh:mm a"))
 
 
-    for (let i = 1; i <= cards[0].childElementCount; i++) {               //This loop populates the card info
+        var cards = $('#card-section');
 
-        //Reference cards
-        var cardActivityID = `#card-${i}-activity-name`;
-        var cardActivity = $(cardActivityID);
 
-        var cardAddressID = `#card-${i}-activity-address`;
-        var cardAddress = $(cardAddressID);
+        for (let i = 1; i <= cards[0].childElementCount; i++) {               //This loop populates the card info
 
-    
-        var cardPhoneNumberID = `#card-${i}-activity-phoneNumber`;
-        var cardPhoneNumber = $(cardPhoneNumberID);
-    
+            //Reference cards
+            var cardActivityID = `#card-${i}-activity-name`;
+            var cardActivity = $(cardActivityID);
 
-        var cardWebsiteID = `#card-${i}-activity-website`;
-        var cardWebsite = $(cardWebsiteID);
+            var cardAddressID = `#card-${i}-activity-address`;
+            var cardAddress = $(cardAddressID);
 
-        
-        //Write blank card listing info
-        cardActivity.text('Not Enough Activities');
 
-        cardAddress.text('Address Unlisted');
+            var cardPhoneNumberID = `#card-${i}-activity-phoneNumber`;
+            var cardPhoneNumber = $(cardPhoneNumberID);
 
-        cardPhoneNumber.text('Unlisted Telephone #');
-        cardPhoneNumber.removeAttr('href');
-      
-        cardWebsite.removeAttr('href');
-        cardWebsite.text('Website Unavailable');
 
-        cardWebsite.css('background-color', '');
-        cardPhoneNumber.css('background-color', '');
-        
-    
-        if(trueWayPlaces && i <= trueWayPlaces.length){
-        //Write trueWayPlaces info
-        cardActivity.text(trueWayPlaces[i - 1].name);
+            var cardWebsiteID = `#card-${i}-activity-website`;
+            var cardWebsite = $(cardWebsiteID);
 
-        cardAddress.text(trueWayPlaces[i - 1].address);
 
-        cardPhoneNumber.attr('href', "tel:" + trueWayPlaces[i-1].phone_number);
-        cardPhoneNumber.text(trueWayPlaces[i-1].phone_number);
-        
-        cardWebsite.attr('href', trueWayPlaces[i - 1].website);
-        cardWebsite.text('Website');
+            //Write blank card listing info
+            cardActivity.text('Not Enough Activities');
 
-        //Reset css rules for card listings
-        cardWebsite.css('cursor', "pointer");
-        cardWebsite.css('background-color', 'green');
+            cardAddress.text('Address Unlisted');
 
-        cardPhoneNumber.css('cursor', 'pointer');
-        cardPhoneNumber.css('background-color', 'green');
-
-      
-        //Validate card listing info
-        if(cardWebsite.attr('href') == undefined){
-            cardWebsite.text('Website Unavailable');
-            cardWebsite.css('cursor', "not-allowed");
-            cardWebsite.css('background-color', 'red');
-        }
-        
-
-        var phoneListed = cardPhoneNumber.attr('href')
-        if(phoneListed === "tel:" + undefined){
             cardPhoneNumber.text('Unlisted Telephone #');
             cardPhoneNumber.removeAttr('href');
-            cardPhoneNumber.css('cursor', 'not-allowed');
-            cardPhoneNumber.css('background-color', 'red');
-        }
-    }
-        
-        
-    }
 
-    resultsSection.fadeIn('slow', 'linear');
-    searchInput.val('');
+            cardWebsite.removeAttr('href');
+            cardWebsite.text('Website Unavailable');
+
+            cardWebsite.css('background-color', '');
+            cardPhoneNumber.css('background-color', '');
+
+
+            if (trueWayPlaces && i <= trueWayPlaces.length) {
+                //Write trueWayPlaces info
+                cardActivity.text(trueWayPlaces[i - 1].name);
+
+                cardAddress.text(trueWayPlaces[i - 1].address);
+
+                cardPhoneNumber.attr('href', "tel:" + trueWayPlaces[i - 1].phone_number);
+                cardPhoneNumber.text(trueWayPlaces[i - 1].phone_number);
+
+                cardWebsite.attr('href', trueWayPlaces[i - 1].website);
+                cardWebsite.text('Website');
+
+                //Reset css rules for card listings
+                cardWebsite.css('cursor', "pointer");
+                cardWebsite.css('background-color', 'green');
+
+                cardPhoneNumber.css('cursor', 'pointer');
+                cardPhoneNumber.css('background-color', 'green');
+
+
+                //Validate card listing info
+                if (cardWebsite.attr('href') == undefined) {
+                    cardWebsite.text('Website Unavailable');
+                    cardWebsite.css('cursor', "not-allowed");
+                    cardWebsite.css('background-color', 'red');
+                }
+
+
+                var phoneListed = cardPhoneNumber.attr('href')
+                if (phoneListed === "tel:" + undefined) {
+                    cardPhoneNumber.text('Unlisted Telephone #');
+                    cardPhoneNumber.removeAttr('href');
+                    cardPhoneNumber.css('cursor', 'not-allowed');
+                    cardPhoneNumber.css('background-color', 'red');
+                }
+            }
+
+
+        }
+
+        resultsSection.fadeIn('slow', 'linear');
+        searchInput.val('');
+    }, 200);
+
 };
 
 function loadSavedCities() {
@@ -367,14 +404,19 @@ btnsearchEl.on('click', onSearchBtnClick);
 
 
 // Get the modal
-var modal = document.getElementById('id01');
+var validationModal = document.getElementById('id01');
+var badResponseModal = document.getElementById('id02');
+
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-    searchInput.val('');
-  }
+window.onclick = function (event) {
+    if (event.target == validationModal) {
+        validationModal.style.display = "none";
+        searchInput.val('');
+    }
+    if (event.target == badResponseModal) {
+        badResponseModal.style.display = "none";
+    }
 }
 
 function clearSavedCities() {
